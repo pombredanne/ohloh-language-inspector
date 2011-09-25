@@ -1,17 +1,15 @@
 class MonthlyMetrics
-	@@ATTRS = [ :blanks_removed, :comments_added, :month, :code_removed, :contributors, :blanks_added, :code_added, :commits, :comments_removed ]
-	@@ATTRS.each { | attr | attr_reader attr }
+	ATTRS = [ :blanks_removed, :comments_added, :month, :code_removed, :contributors, :blanks_added, :code_added, :commits, :comments_removed ]
+	ATTRS.each { | attr | attr_reader attr }
 	attr_accessor :metrics
 
-	def initialize (hash) 
+	def initialize (hash, metrics = @@ATTRS) 
 		hash.each do | k, v |
 			value = v[0]
 			value = Integer(value) if k != 'month' # convert everything but month to int
 			instance_variable_set('@' + k, value)
 		end
-
-		# default metrics we want to get
-		@metrics = @@ATTRS
+		@metrics = metrics
 	end
 
 	# gets an ascending list sorted by date of MontlyMentrics 
@@ -23,9 +21,9 @@ class MonthlyMetrics
 	end
 
 	# makes a hash of date to MonthlyMetrics
-	def self.makeHash (xmlHash)
+	def self.makeHash (xmlHash, metrics = ATTRS)
 		hash = {}
-		xmlHash.keys.each { |k|  hash[k] = MonthlyMetrics.new(xmlHash[k]) }
+		xmlHash.keys.each { |k|  hash[k] = MonthlyMetrics.new(xmlHash[k], metrics) }
 		hash
 	end
 
