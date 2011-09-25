@@ -1,6 +1,7 @@
 class MonthlyMetrics
 	@@ATTRS = [ :blanks_removed, :comments_added, :month, :code_removed, :contributors, :blanks_added, :code_added, :commits, :comments_removed ]
 	@@ATTRS.each { | attr | attr_reader attr }
+	attr_accessor :metrics
 
 	def initialize (hash) 
 		hash.each do | k, v |
@@ -8,6 +9,9 @@ class MonthlyMetrics
 			value = Integer(value) if k != 'month' # convert everything but month to int
 			instance_variable_set('@' + k, value)
 		end
+
+		# default metrics we want to get
+		@metrics = @@ATTRS
 	end
 
 	# gets an ascending list sorted by date of MontlyMentrics 
@@ -27,7 +31,22 @@ class MonthlyMetrics
 
 	def to_hash 
 		hash = {}
-		@@ATTRS.each { | attr | hash[attr] = instance_variable_get('@' + attr.to_s) }
+		@metrics.each { | attr | hash[attr] = send attr }
 		hash
 	end
+
+	# derived attributes
+	# -------------------------------
+	def net_code_added
+		@code_added - @code_removed
+	end
+
+	def net_comments_added
+		@comments_added - @comments_removed
+	end	
+
+	def net_blanks_added
+		@blanks_added - @blanks_removed
+	end
+
 end

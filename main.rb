@@ -23,7 +23,11 @@ get '/stats.json' do
 	facts = getActivityFacts 'xmonad'
 
 	jsonHash = {}
-	facts.keys.each { |k|  jsonHash[k] = facts[k].to_hash }
+	facts.keys.each do |k|
+		month = facts[k]
+		month.metrics= [ 'contributors', 'net_code_added', 'net_comments_added', 'net_blanks_added' ]
+		jsonHash[k] = month.to_hash
+	end
 	jsonHash.to_json
 end
 
