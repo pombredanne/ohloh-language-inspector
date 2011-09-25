@@ -2,4 +2,6 @@ simply do "ruby main.rb"
 
 then you can get stats like so:
 
-wget 'localhost:4567/stats.json'
+wget 'localhost:4567/stats.json?project=xmonad'
+
+project must be the ohloh internal name for this project

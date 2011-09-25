@@ -19,15 +19,23 @@ def getActivityFacts (name, factNames)
 end
 
 get '/stats.json' do
-	content_type :json
-	factNames = [ 'contributors', 'net_code_added', 'net_comments_added', 'net_blanks_added' ]
-	facts = getActivityFacts 'xmonad', factNames
-
 	jsonHash = {}
-	facts.keys.each do |k|
-		month = facts[k]
-		jsonHash[k] = month.to_hash
+	projectName = params['project'] ? params['project'] : 'xmonad'
+	factNames = [ 'contributors', 'net_code_added', 'net_comments_added', 'net_blanks_added' ]
+
+	begin
+		facts = getActivityFacts projectName, factNames
+
+		# construct return json
+		facts.keys.each do |k|
+			month = facts[k]
+			jsonHash[k] = month.to_hash
+		end
+	rescue Exception
+		jsonHash = { 'error' => 'some error' }
 	end
+
+	content_type :json
 	jsonHash.to_json
 end
 
