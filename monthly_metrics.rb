@@ -1,6 +1,6 @@
-
 class MonthlyMetrics
-	attr_reader :blanks_removed, :comments_added, :month, :code_removed, :contributors, :blanks_added, :code_added, :commits, :comments_removed
+	@@ATTRS = [ :blanks_removed, :comments_added, :month, :code_removed, :contributors, :blanks_added, :code_added, :commits, :comments_removed ]
+	@@ATTRS.each { | attr | attr_reader attr }
 
 	def initialize (hash) 
 		hash.each do | k, v |
@@ -18,4 +18,16 @@ class MonthlyMetrics
 		end
 	end
 
+	# makes a hash of date to MonthlyMetrics
+	def self.makeHash (xmlHash)
+		hash = {}
+		xmlHash.keys.each { |k|  hash[k] = MonthlyMetrics.new(xmlHash[k]) }
+		hash
+	end
+
+	def to_hash 
+		hash = {}
+		@@ATTRS.each { | attr | hash[attr] = instance_variable_get('@' + attr.to_s) }
+		hash
+	end
 end
