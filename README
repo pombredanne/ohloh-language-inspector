@@ -1,1 +1,5 @@
 simply do "ruby main.rb"
+
+then you can get stats like so:
+
+wget 'localhost:4567/stats.json'
